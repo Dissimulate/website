@@ -2192,6 +2192,10 @@
   overflow: visible;
   clip: auto; }
 
+@font-face {
+  font-family: 'Open Sans';
+  src: url("fonts/OpenSansregular.ttf") format("truetype"); }
+
 * {
   margin: 0;
   padding: 0; }

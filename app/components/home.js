@@ -1,18 +1,20 @@
 import React from 'react'
 import {Link} from 'react-router'
+import 'whatwg-fetch'
 
 export default class Home extends React.Component {
   constructor () {
     super()
 
     this.scroll.bind(this)
+
+    this.state = {
+      posts: []
+    }
   }
 
   componentDidMount () {
     let bannerHeight = this.refs.banner.offsetHeight
-
-    document.querySelector('.blog-item').style.marginTop =
-      window.innerHeight - bannerHeight
 
     this.refs.text.style.marginTop =
       (window.innerHeight - bannerHeight) / 2 - this.refs.text.offsetHeight
@@ -26,9 +28,6 @@ export default class Home extends React.Component {
       this.refs.downButton.style.opacity = opacity
 
       opacity = 1 - Math.min(1, (document.body.scrollTop - 100) / 100)
-
-      console.log(document.body.scrollTop)
-
       document.querySelectorAll('.link-container > a').forEach((item) => {
         item.style.opacity = opacity
       })
@@ -40,6 +39,28 @@ export default class Home extends React.Component {
         item.classList.toggle('show', visible)
       })
     }
+
+    /* fetch posts */
+
+    window.fetch('/get-data/blog', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        from: this.state.posts.length,
+        limit: 5
+      })
+    })
+    .then((response) => {
+      return response.json()
+    })
+    .then((posts) => {
+      this.setState({
+        posts: this.state.posts.concat(posts)
+      })
+    })
   }
 
   componentWillUnmount () {
@@ -103,7 +124,7 @@ export default class Home extends React.Component {
       document.body,
       document.querySelector('.blog-item').offsetTop - 140,
       1200
-      )
+    )
   }
 
   render () {
@@ -129,12 +150,19 @@ export default class Home extends React.Component {
               onClick={this.scroll}
               className='fa fa-angle-down' />
           </div>
-          <div className='blog-item'></div>
-          <div className='blog-item'></div>
-          <div className='blog-item'></div>
-          <div className='blog-item'></div>
-          <div className='blog-item'></div>
-          <div className='blog-item'></div>
+          {this.state.posts.map((post, i) => {
+            return (
+              <div
+                style={{marginTop: i ? 'default' : window.innerHeight - 300}}
+                className='blog-item'
+                key={i}>
+                {post.title}
+                <br />
+                <br />
+                {post.body}
+              </div>
+            )
+          })}
         </div>
       </div>
     )

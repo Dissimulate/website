@@ -1,6 +1,6 @@
 import React from 'react'
 import {render} from 'react-dom'
-import {browserHistory, Router, Route, IndexRoute, Link} from 'react-router'
+import {browserHistory, Router, Route, IndexRoute} from 'react-router'
 import Home from './components/home'
 import Footer from './components/footer'
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
@@ -11,8 +11,6 @@ class App extends React.Component {
       <ReactCSSTransitionGroup
         component='div'
         transitionName='fade'
-        transitionAppear={true}
-        transitionLeave={true}
         transitionEnterTimeout={600}
         transitionAppearTimeout={600}
         transitionLeaveTimeout={300}>
@@ -26,6 +24,10 @@ class App extends React.Component {
 }
 
 class Lab extends React.Component {
+  componentWillMount () {
+    window.scrollTo(0, 0)
+  }
+
   render () {
     return (
       <div className='hidden-frame'>

@@ -39,6 +39,11 @@ gulp.task('styles', () => {
     .pipe(sass().on('error', sass.logError))
     .pipe(prefix('last 10 versions'))
     .pipe(gulp.dest(BUILD_DIR))
+
+  gulp.src(APP_DIR + '/styles/cms.scss')
+    .pipe(sass().on('error', sass.logError))
+    .pipe(prefix('last 10 versions'))
+    .pipe(gulp.dest(BUILD_DIR))
 })
 
 gulp.task('transpile', () => {
@@ -47,6 +52,38 @@ gulp.task('transpile', () => {
       output: {
         path: BUILD_DIR,
         filename: 'bundle.js'
+      },
+      module: {
+        loaders: [{
+          test: /\.jsx?/,
+          include: APP_DIR,
+          loader: 'babel'
+        }]
+      }
+    }))
+    .pipe(gulp.dest(BUILD_DIR))
+
+  gulp.src(APP_DIR + '/cms/index.js')
+    .pipe(webpack({
+      output: {
+        path: BUILD_DIR,
+        filename: 'cms.js'
+      },
+      module: {
+        loaders: [{
+          test: /\.jsx?/,
+          include: APP_DIR,
+          loader: 'babel'
+        }]
+      }
+    }))
+    .pipe(gulp.dest(BUILD_DIR))
+
+  gulp.src(APP_DIR + '/cms/login.js')
+    .pipe(webpack({
+      output: {
+        path: BUILD_DIR,
+        filename: 'login.js'
       },
       module: {
         loaders: [{
@@ -100,9 +137,9 @@ gulp.task('move', () => {
   gulp.src([APP_DIR + '/fonts/*']).pipe(gulp.dest(BUILD_DIR + '/fonts'))
 })
 
+gulp.task('build', ['styles', 'transpile', 'move'])
+
 gulp.task('default', ['styles', 'transpile', 'move', 'serve'], function () {
   gulp.watch(APP_DIR + '/styles/**/*.scss', ['styles'])
   gulp.watch(APP_DIR + '/**/*.js', ['transpile'])
 })
-
-gulp.task('build', ['styles', 'transpile', 'move'])

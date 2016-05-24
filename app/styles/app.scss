@@ -1,5 +1,10 @@
 @import "./font-awesome/font-awesome";
 
+@font-face {
+  font-family: 'Open Sans';
+  src: url('fonts/OpenSansregular.ttf')  format('truetype')
+}
+
 $blue: #4E92DF;
 $footer: 14em;
 

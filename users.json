@@ -1,0 +1,8 @@
+{
+  "account": [
+    {
+      "user": "admin",
+      "hash": "{\"hash\":\"VULN5vjJhenqHHdyTT0iGU98T2mUmv4ZCxqeTmnuLOSRx+xpI8/R6RqzDQFct0LKFwTg1kS81Kp4KEytYljMYiY+\",\"salt\":\"UjdSN6EGT2a2/c6u7W7iKB9EO8cfbac7zzlXZuSwqoNuir1x0AacbBbjeS8OtQO1opfkNHWRrUpon316SXJfot5F\",\"keyLength\":66,\"hashMethod\":\"pbkdf2\",\"iterations\":289779}"
+    }
+  ]
+}
