@@ -63,38 +63,6 @@ gulp.task('transpile', () => {
     }))
     .pipe(gulp.dest(BUILD_DIR))
 
-  gulp.src(APP_DIR + '/cms/index.js')
-    .pipe(webpack({
-      output: {
-        path: BUILD_DIR,
-        filename: 'cms.js'
-      },
-      module: {
-        loaders: [{
-          test: /\.jsx?/,
-          include: APP_DIR,
-          loader: 'babel'
-        }]
-      }
-    }))
-    .pipe(gulp.dest(BUILD_DIR))
-
-  gulp.src(APP_DIR + '/cms/login.js')
-    .pipe(webpack({
-      output: {
-        path: BUILD_DIR,
-        filename: 'login.js'
-      },
-      module: {
-        loaders: [{
-          test: /\.jsx?/,
-          include: APP_DIR,
-          loader: 'babel'
-        }]
-      }
-    }))
-    .pipe(gulp.dest(BUILD_DIR))
-
   gulp.src(APP_DIR + '/server/index.js')
     .pipe(webpack({
       target: 'node',

@@ -1,6 +1,6 @@
 import express from 'express'
 import path from 'path'
-import CMS from './cms'
+import CMS from 'czar'
 
 const app = express()
 const port = 8080
