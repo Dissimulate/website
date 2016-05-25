@@ -5,6 +5,7 @@ const path = require('path')
 const gulp = require('gulp')
 const sass = require('gulp-sass')
 const GulpSSH = require('gulp-ssh')
+const rename = require('gulp-rename')
 const nodemon = require('gulp-nodemon')
 const webpack = require('webpack-stream')
 const prefix = require('gulp-autoprefixer')
@@ -37,6 +38,7 @@ fs.readdirSync('node_modules')
 gulp.task('styles', () => {
   gulp.src(APP_DIR + '/styles/app.scss')
     .pipe(sass().on('error', sass.logError))
+    .pipe(rename('style.css'))
     .pipe(prefix('last 10 versions'))
     .pipe(gulp.dest(BUILD_DIR))
 
@@ -51,7 +53,7 @@ gulp.task('transpile', () => {
     .pipe(webpack({
       output: {
         path: BUILD_DIR,
-        filename: 'bundle.js'
+        filename: 'client.js'
       },
       module: {
         loaders: [{

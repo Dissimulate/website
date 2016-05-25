@@ -42,7 +42,7 @@ export default class Home extends React.Component {
 
     /* fetch posts */
 
-    window.fetch('/get-data/blog', {
+    window.fetch('/data/get/blog', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
