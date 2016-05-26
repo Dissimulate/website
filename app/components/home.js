@@ -9,8 +9,39 @@ export default class Home extends React.Component {
     this.scroll.bind(this)
 
     this.state = {
-      posts: []
+      posts: [],
+      loaded: false
     }
+
+    this.loading = false
+  }
+
+  getPosts () {
+    if (this.loading || this.state.loaded) return
+
+    this.loading = true
+
+    window.fetch('/data/get/blog', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        from: this.state.posts.length,
+        limit: 5
+      })
+    })
+    .then((response) => {
+      return response.json()
+    })
+    .then((posts) => {
+      this.loading = false
+      this.setState({
+        posts: this.state.posts.concat(posts),
+        loaded: posts.length < 5
+      })
+    })
   }
 
   componentDidMount () {
@@ -32,35 +63,19 @@ export default class Home extends React.Component {
         item.style.opacity = opacity
       })
 
-      document.querySelectorAll('.blog-item').forEach((item) => {
+      document.querySelectorAll('.blog-item').forEach((item, i) => {
         let visible =
           document.body.scrollTop + window.innerHeight - 60 > item.offsetTop
 
         item.classList.toggle('show', visible)
+
+        if (visible && document.querySelectorAll('.blog-item').length - 1 === i) {
+          this.getPosts()
+        }
       })
     }
 
-    /* fetch posts */
-
-    window.fetch('/data/get/blog', {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        from: this.state.posts.length,
-        limit: 5
-      })
-    })
-    .then((response) => {
-      return response.json()
-    })
-    .then((posts) => {
-      this.setState({
-        posts: this.state.posts.concat(posts)
-      })
-    })
+    this.getPosts()
   }
 
   componentWillUnmount () {
@@ -129,7 +144,7 @@ export default class Home extends React.Component {
 
   render () {
     return (
-      <div key={2}>
+      <div>
         <div ref='topBar' className='top-bar'>
           <Link to='/projects'>projects</Link>
           <Link to='/lab'>lab</Link>
@@ -156,10 +171,8 @@ export default class Home extends React.Component {
                 style={{marginTop: i ? 'default' : window.innerHeight - 300}}
                 className='blog-item'
                 key={i}>
-                {post.title}
-                <br />
-                <br />
-                {post.body}
+                <div>{post.title}</div>
+                <div>{post.body}</div>
               </div>
             )
           })}

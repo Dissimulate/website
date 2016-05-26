@@ -25989,41 +25989,22 @@
 	    _this.scroll.bind(_this);
 
 	    _this.state = {
-	      posts: []
+	      posts: [],
+	      loaded: false
 	    };
+
+	    _this.loading = false;
 	    return _this;
 	  }
 
 	  _createClass(Home, [{
-	    key: 'componentDidMount',
-	    value: function componentDidMount() {
+	    key: 'getPosts',
+	    value: function getPosts() {
 	      var _this2 = this;
 
-	      var bannerHeight = this.refs.banner.offsetHeight;
+	      if (this.loading || this.state.loaded) return;
 
-	      this.refs.text.style.marginTop = (window.innerHeight - bannerHeight) / 2 - this.refs.text.offsetHeight;
-
-	      window.onscroll = function (e) {
-	        var scrolled = document.body.scrollTop - bannerHeight + 10;
-	        var opacity = Math.min(1, scrolled / 60);
-	        _this2.refs.topBar.style.color = 'rgba(255, 255, 255, ' + opacity + ')';
-
-	        opacity = 1 - Math.min(1, scrolled / 200);
-	        _this2.refs.downButton.style.opacity = opacity;
-
-	        opacity = 1 - Math.min(1, (document.body.scrollTop - 100) / 100);
-	        document.querySelectorAll('.link-container > a').forEach(function (item) {
-	          item.style.opacity = opacity;
-	        });
-
-	        document.querySelectorAll('.blog-item').forEach(function (item) {
-	          var visible = document.body.scrollTop + window.innerHeight - 60 > item.offsetTop;
-
-	          item.classList.toggle('show', visible);
-	        });
-	      };
-
-	      /* fetch posts */
+	      this.loading = true;
 
 	      window.fetch('/data/get/blog', {
 	        method: 'POST',
@@ -26038,10 +26019,47 @@
 	      }).then(function (response) {
 	        return response.json();
 	      }).then(function (posts) {
+	        _this2.loading = false;
 	        _this2.setState({
-	          posts: _this2.state.posts.concat(posts)
+	          posts: _this2.state.posts.concat(posts),
+	          loaded: posts.length < 5
 	        });
 	      });
+	    }
+	  }, {
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {
+	      var _this3 = this;
+
+	      var bannerHeight = this.refs.banner.offsetHeight;
+
+	      this.refs.text.style.marginTop = (window.innerHeight - bannerHeight) / 2 - this.refs.text.offsetHeight;
+
+	      window.onscroll = function (e) {
+	        var scrolled = document.body.scrollTop - bannerHeight + 10;
+	        var opacity = Math.min(1, scrolled / 60);
+	        _this3.refs.topBar.style.color = 'rgba(255, 255, 255, ' + opacity + ')';
+
+	        opacity = 1 - Math.min(1, scrolled / 200);
+	        _this3.refs.downButton.style.opacity = opacity;
+
+	        opacity = 1 - Math.min(1, (document.body.scrollTop - 100) / 100);
+	        document.querySelectorAll('.link-container > a').forEach(function (item) {
+	          item.style.opacity = opacity;
+	        });
+
+	        document.querySelectorAll('.blog-item').forEach(function (item, i) {
+	          var visible = document.body.scrollTop + window.innerHeight - 60 > item.offsetTop;
+
+	          item.classList.toggle('show', visible);
+
+	          if (visible && document.querySelectorAll('.blog-item').length - 1 === i) {
+	            _this3.getPosts();
+	          }
+	        });
+	      };
+
+	      this.getPosts();
 	    }
 	  }, {
 	    key: 'componentWillUnmount',
@@ -26108,7 +26126,7 @@
 	    value: function render() {
 	      return _react2.default.createElement(
 	        'div',
-	        { key: 2 },
+	        null,
 	        _react2.default.createElement(
 	          'div',
 	          { ref: 'topBar', className: 'top-bar' },
@@ -26158,10 +26176,16 @@
 	                style: { marginTop: i ? 'default' : window.innerHeight - 300 },
 	                className: 'blog-item',
 	                key: i },
-	              post.title,
-	              _react2.default.createElement('br', null),
-	              _react2.default.createElement('br', null),
-	              post.body
+	              _react2.default.createElement(
+	                'div',
+	                null,
+	                post.title
+	              ),
+	              _react2.default.createElement(
+	                'div',
+	                null,
+	                post.body
+	              )
 	            );
 	          })
 	        )

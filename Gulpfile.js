@@ -30,13 +30,16 @@ try {
 
   gulp.task('deploy', function () {
     return ssh.shell([
-      'cd website', 'git pull', 'npm install', 'gulp build'
+      'cd website',
+      'git fetch --all',
+      'git reset --hard origin/master',
+      'git pull origin master',
+      'npm install',
+      'gulp build'
     ])
     .pipe(gulp.dest('logs'))
   })
-} catch (e) {
-
-}
+} catch (e) {}
 
 fs.readdirSync('node_modules')
   .filter((x) => {
